@@ -1,11 +1,10 @@
 // Book Shope Project With File Handling in C++.
 #include <iostream>
-#include <conio.h>
-#include <stdio.h>
 #include <fstream>
+
 using namespace std;
 
-class BookShop
+class book_shop
 {
 public:
 	void control_panel();
@@ -19,13 +18,16 @@ private:
 	void del_book();
 };
 
-void BookShop::get_choice()
+void book_shop::get_choice()
 {
-	BookShop b;
+	book_shop b;
+
 	int choice;
-	char x;
 	cout << "\n\n Your Choice : ";
 	cin >> choice;
+
+	char x;
+
 	switch (choice)
 	{
 	case 1:
@@ -34,7 +36,7 @@ void BookShop::get_choice()
 			b.add_book();
 			cout << "\n\n Do You Want to Add another Book (y,n) : ";
 			cin >> x;
-		} while (x == 'y');
+		} while (x == 'y' || x == 'Y');
 		break;
 	case 2:
 		b.show_books();
@@ -53,14 +55,14 @@ void BookShop::get_choice()
 	default:
 		cout << "\n\n Invalid Value...Please Try Again...";
 	}
-	getch();
+	cin.get();
 	control_panel();
 }
 
-void BookShop::control_panel()
+void book_shop::control_panel()
 {
-	BookShop b;
-	system("cls");
+	book_shop b;
+	cout << "\033c" << endl;
 	cout << "\n\n\t\t\t\tControl Panel";
 	cout << "\n\n 1. Add New Book";
 	cout << "\n 2. Display Books";
@@ -71,29 +73,37 @@ void BookShop::control_panel()
 	b.get_choice();
 }
 
-void BookShop::add_book()
+void book_shop::add_book()
 {
-	system("cls");
+	cout << "\033c" << endl; // clears the terminal
+
 	fstream file;
-	int no_copy;
+
 	string b_name, a_name, b_id;
+	int no_copy;
+
 	cout << "\n\n\t\t\t\t ADD New Book";
 	cout << "\n\n Book ID : ";
 	cin >> b_id;
+	getline(cin, b_name);
+
 	cout << "\n\n\t\t\t Book Name : ";
-	cin >> b_name;
+	getline(cin, b_name);
+
 	cout << "\n\n Author Name : ";
-	cin >> a_name;
+	getline(cin, a_name);
+
 	cout << "\n\n\t\t\t No. of Copies : ";
 	cin >> no_copy;
-	file.open("C://book.txt", ios::out | ios::app);
+
+	file.open("book.txt", ios::out | ios::app);
 	file << " " << b_id << " " << b_name << " " << a_name << " " << no_copy << "\n";
 	file.close();
 }
 
-void BookShop::show_books()
+void book_shop::show_books()
 {
-	system("cls");
+	cout << "\033c" << endl;
 	fstream file;
 	int no_copy;
 	string b_name, b_id, a_name;
@@ -114,14 +124,14 @@ void BookShop::show_books()
 	}
 }
 
-void BookShop::check_book()
+void book_shop::check_book()
 {
-	system("cls");
+	cout << "\033c" << endl;
 	fstream file;
 	int no_copy, count = 0;
 	string b_id, b_name, a_name, b_idd;
 	cout << "\n\n\t\t\t\tCheck Specific Book";
-	file.open("C://book.txt", ios::in);
+	file.open("book.txt", ios::in);
 	if (!file)
 		cout << "\n\n File Openning Error...";
 	else
@@ -133,7 +143,7 @@ void BookShop::check_book()
 		{
 			if (b_idd == b_id)
 			{
-				system("cls");
+				cout << "\033c" << endl;
 				cout << "\n\n\t\t\t\tCheck Specific Book";
 				cout << "\n\n Book ID : " << b_id;
 				cout << "\n\n\t\t\tName : " << b_name;
@@ -150,15 +160,15 @@ void BookShop::check_book()
 	}
 }
 
-void BookShop::update_book()
+void book_shop::update_book()
 {
-	system("cls");
+	cout << "\033c" << endl;
 	fstream file, file1;
 	int no_copy, no_co, count = 0;
 	string b_name, b_na, a_name, a_na, b_idd, b_id;
 	cout << "\n\n\t\t\t\tUpdate Book Record";
-	file1.open("C://book1.txt", ios::app | ios::out);
-	file.open("C://book.txt", ios::in);
+	file1.open("book1.txt", ios::app | ios::out);
+	file.open("book.txt", ios::in);
 	if (!file)
 		cout << "\n\n File Openning Error...";
 	else
@@ -170,7 +180,7 @@ void BookShop::update_book()
 		{
 			if (b_id == b_idd)
 			{
-				system("cls");
+				cout << "\033c" << endl;
 				cout << "\n\n\t\t\t\tUpdate Book Record";
 				cout << "\n\n New Book Name : ";
 				cin >> b_na;
@@ -190,19 +200,19 @@ void BookShop::update_book()
 	}
 	file.close();
 	file1.close();
-	remove("C://book.txt");
-	rename("C://book1.txt", "D://book.txt");
+	remove("book.txt");
+	rename("book1.txt", "book.txt");
 }
 
-void BookShop::del_book()
+void book_shop::del_book()
 {
-	system("cls");
+	cout << "\033c" << endl;
 	fstream file, file1;
 	int no_copy, count = 0;
 	string b_id, b_idd, b_name, a_name;
 	cout << "\n\n\t\t\t\tDelete Book Record";
-	file1.open("C://book1.txt", ios::app | ios::out);
-	file.open("C://book.txt", ios::in);
+	file1.open("book1.txt", ios::app | ios::out);
+	file.open("book.txt", ios::in);
 	if (!file)
 		cout << "\n\n File Openning Error...";
 	else
@@ -214,7 +224,7 @@ void BookShop::del_book()
 		{
 			if (b_id == b_idd)
 			{
-				system("cls");
+				cout << "\033c" << endl;
 				cout << "\n\n\t\t\t\tDelete Book Record";
 				cout << "\n\n One Book is Deleted Successfully...";
 				count++;
@@ -228,15 +238,15 @@ void BookShop::del_book()
 	}
 	file.close();
 	file1.close();
-	remove("C://book.txt");
-	rename("C://book1.txt", "C://book.txt");
+	remove("book.txt");
+	rename("book1.txt", "book.txt");
 }
 
-main()
+int main()
 {
 	int choice;
 	char x;
-	BookShop b;
+	book_shop b;
 	b.control_panel();
 	return 0;
 }
