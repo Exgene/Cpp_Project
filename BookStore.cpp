@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <string>
 
 using namespace std;
 
@@ -15,10 +16,10 @@ public:
 private:
 	void add_book();
 	void show_books();
-	void check_book();
-	void update_book();
-	void del_book();
-	void rent_book();
+	void check_book(int id);
+	void update_book(int id);
+	void del_book(int id);
+	void rent_book(int id);
 };
 
 void book_shop::get_choice()
@@ -30,6 +31,7 @@ void book_shop::get_choice()
 	cin >> choice;
 
 	char x;
+	int i;
 
 	switch (choice)
 	{
@@ -45,15 +47,34 @@ void book_shop::get_choice()
 		b.show_books();
 		break;
 	case 3:
-		b.check_book();
+		cout << "\033c" << endl;
+		cout << "\n\n\t\t\t\tSearch a book\n";
+		cout << "Enter Book ID: ";
+		cin >> i;
+		b.check_book(i);
 		break;
 	case 4:
-		b.update_book();
+		cout << "\033c" << endl;
+		cout << "\n\n\t\t\t\tUpdate/Edit book\n";
+		cout << "Enter Book ID: ";
+		cin >> i;
+		b.update_book(i);
 		break;
 	case 5:
-		b.del_book();
+		cout << "\033c" << endl;
+		cout << "\n\n\t\t\t\tDelete book\n";
+		cout << "Enter Book ID: ";
+		cin >> i;
+		b.del_book(i);
 		break;
 	case 6:
+		cout << "\033c" << endl;
+		cout << "\n\n\t\t\t\tRent book\n";
+		cout << "Enter Book ID: ";
+		cin >> i;
+		b.rent_book(i);
+		break;
+	case 7:
 		exit(0);
 	default:
 		cout << "\n\n Invalid Value...Please Try Again...";
@@ -72,7 +93,8 @@ void book_shop::control_panel()
 	cout << "\n 3. Check Specific Book";
 	cout << "\n 4. Update Book";
 	cout << "\n 5. Delete Book";
-	cout << "\n 6. Exit";
+	cout << "\n 6. Rent Book";
+	cout << "\n 7. Exit";
 	b.get_choice();
 }
 
@@ -100,7 +122,7 @@ void book_shop::add_book()
 	cin >> num_copies;
 
 	file.open("library.csv", ios::out | ios::app);
-	file << " " << book_id << "," << title << "," << authors << "," << num_copies << "\n";
+	file << book_id << "," << title << "," << authors << "," << num_copies << "\n";
 	file.close();
 }
 
@@ -152,122 +174,299 @@ void book_shop::show_books()
 	file.close();
 }
 
-void book_shop::check_book()
+void book_shop::check_book(int id)
 {
-	cout << "\033c" << endl;
+	string line;
+	string book_id, title, authors, num_copies;
+
 	fstream file;
-	int num_copies, count = 0;
-	string book_id, title, authors, b_idd;
-	cout << "\n\n\t\t\t\tCheck Specific Book";
-	file.open("book.txt", ios::in);
+	file.open("library.csv", ios::in);
 	if (!file)
-		cout << "\n\n File Openning Error...";
-	else
 	{
-		cout << "\n\n Book ID : ";
-		cin >> b_idd;
-		file >> book_id >> title >> authors >> num_copies;
-		while (!file.eof())
+		cout << "\n\n File Openning Error...";
+		return;
+	}
+
+	getline(file, line);
+	while (getline(file, line))
+	{
+		istringstream ssin(line);
+		getline(ssin, book_id, ',');
+		if (stoi(book_id) == id)
 		{
-			if (b_idd == book_id)
-			{
-				cout << "\033c" << endl;
-				cout << "\n\n\t\t\t\tCheck Specific Book";
-				cout << "\n\n Book ID : " << book_id;
-				cout << "\n\n\t\t\tName : " << title;
-				cout << "\n\n Author : " << authors;
-				cout << "\n\n\t\t\tNo. of Copies : " << num_copies;
-				count++;
-				break;
-			}
-			file >> book_id >> title >> authors >> num_copies;
+			getline(ssin, title, ',');
+			getline(ssin, authors, ',');
+			getline(ssin, num_copies, ',');
+			cout << "Book ID: " << book_id << endl;
+			cout << "Title: " << title << endl;
+			cout << "Authors: " << authors << endl;
+			cout << "Number of Copies: " << num_copies << endl;
+			break;
 		}
-		file.close();
-		if (count == 0)
-			cout << "\n\n Book ID Not Found...";
+	}
+	file.close();
+
+	if (stoi(book_id) != id)
+	{
+		cout << "Book not found" << endl;
+		return;
 	}
 }
 
-void book_shop::update_book()
+void book_shop::update_book(int id)
 {
-	cout << "\033c" << endl;
-	fstream file, file1;
-	int num_copies, no_co, count = 0;
-	string title, b_na, authors, a_na, b_idd, book_id;
-	cout << "\n\n\t\t\t\tUpdate Book Record";
-	file1.open("book1.txt", ios::app | ios::out);
-	file.open("book.txt", ios::in);
+	string line;
+	string book_id, title, authors, num_copies;
+
+	fstream file;
+	file.open("library.csv", ios::in);
 	if (!file)
-		cout << "\n\n File Openning Error...";
-	else
 	{
-		cout << "\n\n Book ID : ";
-		cin >> book_id;
-		file >> b_idd >> title >> authors >> num_copies;
-		while (!file.eof())
+		cout << "\n\n File Openning Error...";
+		return;
+	}
+
+	getline(file, line);
+	while (getline(file, line))
+	{
+		istringstream ssin(line);
+		getline(ssin, book_id, ',');
+		if (stoi(book_id) == id)
 		{
-			if (book_id == b_idd)
-			{
-				cout << "\033c" << endl;
-				cout << "\n\n\t\t\t\tUpdate Book Record";
-				cout << "\n\n New Book Name : ";
-				cin >> b_na;
-				cout << "\n\n\t\t\tAuthor Name : ";
-				cin >> a_na;
-				cout << "\n\n No. of Copies : ";
-				cin >> no_co;
-				file1 << " " << book_id << " " << b_na << " " << a_na << " " << no_co << "\n";
-				count++;
-			}
-			else
-				file1 << " " << b_idd << " " << title << " " << authors << " " << num_copies << "\n";
-			file >> b_idd >> title >> authors >> num_copies;
+			getline(ssin, title, ',');
+			getline(ssin, authors, ',');
+			getline(ssin, num_copies, ',');
+			cout << "Book ID: " << book_id << endl;
+			cout << "Title: " << title << endl;
+			cout << "Authors: " << authors << endl;
+			cout << "Number of Copies: " << num_copies << endl;
+			break;
 		}
-		if (count == 0)
-			cout << "\n\n Book ID Not Found...";
 	}
 	file.close();
-	file1.close();
-	remove("book.txt");
-	rename("book1.txt", "book.txt");
+
+	if (stoi(book_id) != id)
+	{
+		cout << "Book not found" << endl;
+		return;
+	}
+
+	string new_title, new_authors, new_num_copies, element;
+	getline(cin, element);
+	cout << "What element would you like to update? (title, authors, num_copies): ";
+	getline(cin, element);
+
+	if (element == "title")
+	{
+		cout << "Enter new title: ";
+		// cin.ignore();
+		getline(cin, new_title);
+		title = new_title;
+	}
+	else if (element == "authors")
+	{
+		cout << "Enter new authors: ";
+		// cin.ignore();
+		getline(cin, new_authors);
+		authors = new_authors;
+	}
+	else if (element == "num_copies")
+	{
+		cout << "Enter new num_copies: ";
+		// cin.ignore();
+		getline(cin, new_num_copies);
+		num_copies = new_num_copies;
+	}
+
+	string new_line = book_id + "," + title + "," + authors + "," + num_copies;
+	cout << new_line << endl;
+
+	string temp_file = "temp.csv";
+	fstream file_in("library.csv", ios::in);
+	fstream file_out(temp_file, ios::out);
+
+	getline(file_in, line);
+	file_out << line << endl;
+	while (getline(file_in, line))
+	{
+		istringstream ssin(line);
+		getline(ssin, book_id, ',');
+		if (stoi(book_id) != id)
+		{
+			file_out << line << endl;
+		}
+		else
+		{
+			file_out << new_line << endl;
+		}
+	}
+
+	file_in.close();
+	file_out.close();
+	remove("library.csv");
+	rename(temp_file.c_str(), "library.csv");
 }
 
-void book_shop::del_book()
+void book_shop::del_book(int id)
 {
-	cout << "\033c" << endl;
-	fstream file, file1;
-	int num_copies, count = 0;
-	string book_id, b_idd, title, authors;
-	cout << "\n\n\t\t\t\tDelete Book Record";
-	file1.open("book1.txt", ios::app | ios::out);
-	file.open("book.txt", ios::in);
+	string line;
+	string book_id, title, authors, num_copies;
+
+	fstream file;
+	file.open("library.csv", ios::in);
 	if (!file)
-		cout << "\n\n File Openning Error...";
-	else
 	{
-		cout << "\n\n Book ID : ";
-		cin >> book_id;
-		file >> b_idd >> title >> authors >> num_copies;
-		while (!file.eof())
+		cout << "\n\n File Openning Error...";
+		return;
+	}
+
+	getline(file, line);
+	while (getline(file, line))
+	{
+		istringstream ssin(line);
+		getline(ssin, book_id, ',');
+		if (stoi(book_id) == id)
 		{
-			if (book_id == b_idd)
-			{
-				cout << "\033c" << endl;
-				cout << "\n\n\t\t\t\tDelete Book Record";
-				cout << "\n\n One Book is Deleted Successfully...";
-				count++;
-			}
-			else
-				file1 << " " << b_idd << " " << title << " " << authors << " " << num_copies << "\n";
-			file >> b_idd >> title >> authors >> num_copies;
+			getline(ssin, title, ',');
+			getline(ssin, authors, ',');
+			getline(ssin, num_copies, ',');
+			cout << "Book ID: " << book_id << endl;
+			cout << "Title: " << title << endl;
+			cout << "Authors: " << authors << endl;
+			cout << "Number of Copies: " << num_copies << endl;
+			break;
 		}
-		if (count == 0)
-			cout << "\n\n Book ID Not Found...";
 	}
 	file.close();
-	file1.close();
-	remove("book.txt");
-	rename("book1.txt", "book.txt");
+
+	if (stoi(book_id) != id)
+	{
+		cout << "Book not found" << endl;
+		return;
+	}
+
+	char x;
+	cout << "\nAre you sure you want to delete this book? (y,n)\nNote this action is permanent and irreversible : ";
+	cin >> x;
+	if (x != 'y' && x != 'Y')
+	{
+		cout << "The book was not deleted" << endl;
+		return;
+	}
+
+	string temp_file = "temp.csv";
+	fstream file_in("library.csv", ios::in);
+	fstream file_out(temp_file, ios::out);
+
+	getline(file_in, line);
+	file_out << line << endl;
+	while (getline(file_in, line))
+	{
+		istringstream ssin(line);
+		getline(ssin, book_id, ',');
+		if (stoi(book_id) != id)
+		{
+			file_out << line << endl;
+		}
+	}
+
+	file_in.close();
+	file_out.close();
+	remove("library.csv");
+	rename(temp_file.c_str(), "library.csv");
+
+	cout << "\nThe book (id:" << book_id << ") is now deleted ";
+}
+
+void book_shop::rent_book(int id)
+{
+	string line;
+	string book_id, title, authors, num_copies;
+
+	fstream file;
+	file.open("library.csv", ios::in);
+	if (!file)
+	{
+		cout << "\n\n File Openning Error...";
+		return;
+	}
+
+	getline(file, line);
+	while (getline(file, line))
+	{
+		istringstream ssin(line);
+		getline(ssin, book_id, ',');
+		if (stoi(book_id) == id)
+		{
+			getline(ssin, title, ',');
+			getline(ssin, authors, ',');
+			getline(ssin, num_copies, ',');
+			cout << "Book ID: " << book_id << endl;
+			cout << "Title: " << title << endl;
+			cout << "Authors: " << authors << endl;
+			cout << "Number of Copies: " << num_copies << endl;
+			break;
+		}
+	}
+	file.close();
+
+	if (stoi(book_id) != id)
+	{
+		cout << "Book not found" << endl;
+		return;
+	}
+
+	int copies = stoi(num_copies);
+
+	if (copies == 0)
+	{
+		cout << "\nThis book is currently unavailable" << endl;
+		cout << "\nCannot be rented" << endl;
+		return;
+	}
+
+	char x;
+	cout << "\nAre you sure you want to rent/borrow this book? (y,n)\n";
+	cin >> x;
+	if (x != 'y' && x != 'Y')
+	{
+		cout << "Book not rented" << endl;
+		return;
+	}
+
+	copies = copies - 1;
+
+	num_copies = to_string(copies);
+
+	string new_line = book_id + "," + title + "," + authors + "," + num_copies;
+	cout << new_line << endl;
+
+	string temp_file = "temp.csv";
+	fstream file_in("library.csv", ios::in);
+	fstream file_out(temp_file, ios::out);
+
+	getline(file_in, line);
+	file_out << line << endl;
+	while (getline(file_in, line))
+	{
+		istringstream ssin(line);
+		getline(ssin, book_id, ',');
+		if (stoi(book_id) != id)
+		{
+			file_out << line << endl;
+		}
+		else
+		{
+			file_out << new_line << endl;
+		}
+	}
+
+	file_in.close();
+	file_out.close();
+	remove("library.csv");
+	rename(temp_file.c_str(), "library.csv");
+
+	cout << "\nThe book (id:" << book_id << ") is successfully rented ";
 }
 
 int main()
