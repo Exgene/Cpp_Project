@@ -229,7 +229,7 @@ class BookShop
 		file.close();
 		file1.close();
 		remove("C://book.txt");
-		rename("C://book1.txt","D://book.txt");
+		rename("C://book1.txt","C://book.txt");
 	}
 main()
 {
