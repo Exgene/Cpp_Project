@@ -1,6 +1,8 @@
 // Book Shope Project With File Handling in C++.
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -16,6 +18,7 @@ private:
 	void check_book();
 	void update_book();
 	void del_book();
+	void rent_book();
 };
 
 void book_shop::get_choice()
@@ -62,7 +65,7 @@ void book_shop::get_choice()
 void book_shop::control_panel()
 {
 	book_shop b;
-	cout << "\033c" << endl;
+	// cout << "\033c" << endl;
 	cout << "\n\n\t\t\t\tControl Panel";
 	cout << "\n\n 1. Add New Book";
 	cout << "\n 2. Display Books";
@@ -79,57 +82,82 @@ void book_shop::add_book()
 
 	fstream file;
 
-	string b_name, a_name, b_id;
-	int no_copy;
+	string title, authors, book_id;
+	int num_copies;
 
 	cout << "\n\n\t\t\t\t ADD New Book";
 	cout << "\n\n Book ID : ";
-	cin >> b_id;
-	getline(cin, b_name);
+	cin >> book_id;
+	getline(cin, title);
 
 	cout << "\n\n\t\t\t Book Name : ";
-	getline(cin, b_name);
+	getline(cin, title);
 
 	cout << "\n\n Author Name : ";
-	getline(cin, a_name);
+	getline(cin, authors);
 
 	cout << "\n\n\t\t\t No. of Copies : ";
-	cin >> no_copy;
+	cin >> num_copies;
 
-	file.open("book.txt", ios::out | ios::app);
-	file << " " << b_id << " " << b_name << " " << a_name << " " << no_copy << "\n";
+	file.open("library.csv", ios::out | ios::app);
+	file << " " << book_id << "," << title << "," << authors << "," << num_copies << "\n";
 	file.close();
 }
 
 void book_shop::show_books()
 {
 	cout << "\033c" << endl;
-	fstream file;
-	int no_copy;
-	string b_name, b_id, a_name;
+
 	cout << "\n\n\t\t\t\t   All Books";
-	file.open("C://book.txt", ios::in);
+
+	fstream file;
+	file.open("library.csv", ios::in);
 	if (!file)
-		cout << "\n\n File Openning Error...";
-	else
 	{
-		cout << "\n\n Book ID\tBook\t\tAuthor\t\tNo. of Copies\n\n";
-		file >> b_id >> b_name >> a_name >> no_copy;
-		while (!file.eof())
-		{
-			cout << "\t" << b_id << "\t" << b_name << "\t" << a_name << "\t\t" << no_copy << "\n\n";
-			file >> b_id >> b_name >> a_name >> no_copy;
-		}
-		file.close();
+		cout << "\n\n File Openning Error...";
+		return;
 	}
+
+	cout << "\n\n\t Book ID\tBook\t\tAuthor\t\tNo. of Copies\n\n";
+	string row;
+	getline(file, row);
+
+	string book_id, title, authors, num_copies;
+
+	while (getline(file, row))
+	{
+		istringstream ssin(row);
+		if (!getline(ssin, book_id, ','))
+		{
+			cout << "Invalid data in file" << endl;
+			continue;
+		}
+		if (!getline(ssin, title, ','))
+		{
+			cout << "Invalid data in file" << endl;
+			continue;
+		}
+		if (!getline(ssin, authors, ','))
+		{
+			cout << "Invalid data in file" << endl;
+			continue;
+		}
+		if (!getline(ssin, num_copies, ','))
+		{
+			cout << "Invalid data in file" << endl;
+			continue;
+		}
+		cout << "\t" << left << setw(8) << book_id << setw(25) << title << setw(20) << authors << num_copies << endl;
+	}
+	file.close();
 }
 
 void book_shop::check_book()
 {
 	cout << "\033c" << endl;
 	fstream file;
-	int no_copy, count = 0;
-	string b_id, b_name, a_name, b_idd;
+	int num_copies, count = 0;
+	string book_id, title, authors, b_idd;
 	cout << "\n\n\t\t\t\tCheck Specific Book";
 	file.open("book.txt", ios::in);
 	if (!file)
@@ -138,21 +166,21 @@ void book_shop::check_book()
 	{
 		cout << "\n\n Book ID : ";
 		cin >> b_idd;
-		file >> b_id >> b_name >> a_name >> no_copy;
+		file >> book_id >> title >> authors >> num_copies;
 		while (!file.eof())
 		{
-			if (b_idd == b_id)
+			if (b_idd == book_id)
 			{
 				cout << "\033c" << endl;
 				cout << "\n\n\t\t\t\tCheck Specific Book";
-				cout << "\n\n Book ID : " << b_id;
-				cout << "\n\n\t\t\tName : " << b_name;
-				cout << "\n\n Author : " << a_name;
-				cout << "\n\n\t\t\tNo. of Copies : " << no_copy;
+				cout << "\n\n Book ID : " << book_id;
+				cout << "\n\n\t\t\tName : " << title;
+				cout << "\n\n Author : " << authors;
+				cout << "\n\n\t\t\tNo. of Copies : " << num_copies;
 				count++;
 				break;
 			}
-			file >> b_id >> b_name >> a_name >> no_copy;
+			file >> book_id >> title >> authors >> num_copies;
 		}
 		file.close();
 		if (count == 0)
@@ -164,8 +192,8 @@ void book_shop::update_book()
 {
 	cout << "\033c" << endl;
 	fstream file, file1;
-	int no_copy, no_co, count = 0;
-	string b_name, b_na, a_name, a_na, b_idd, b_id;
+	int num_copies, no_co, count = 0;
+	string title, b_na, authors, a_na, b_idd, book_id;
 	cout << "\n\n\t\t\t\tUpdate Book Record";
 	file1.open("book1.txt", ios::app | ios::out);
 	file.open("book.txt", ios::in);
@@ -174,11 +202,11 @@ void book_shop::update_book()
 	else
 	{
 		cout << "\n\n Book ID : ";
-		cin >> b_id;
-		file >> b_idd >> b_name >> a_name >> no_copy;
+		cin >> book_id;
+		file >> b_idd >> title >> authors >> num_copies;
 		while (!file.eof())
 		{
-			if (b_id == b_idd)
+			if (book_id == b_idd)
 			{
 				cout << "\033c" << endl;
 				cout << "\n\n\t\t\t\tUpdate Book Record";
@@ -188,12 +216,12 @@ void book_shop::update_book()
 				cin >> a_na;
 				cout << "\n\n No. of Copies : ";
 				cin >> no_co;
-				file1 << " " << b_id << " " << b_na << " " << a_na << " " << no_co << "\n";
+				file1 << " " << book_id << " " << b_na << " " << a_na << " " << no_co << "\n";
 				count++;
 			}
 			else
-				file1 << " " << b_idd << " " << b_name << " " << a_name << " " << no_copy << "\n";
-			file >> b_idd >> b_name >> a_name >> no_copy;
+				file1 << " " << b_idd << " " << title << " " << authors << " " << num_copies << "\n";
+			file >> b_idd >> title >> authors >> num_copies;
 		}
 		if (count == 0)
 			cout << "\n\n Book ID Not Found...";
@@ -208,8 +236,8 @@ void book_shop::del_book()
 {
 	cout << "\033c" << endl;
 	fstream file, file1;
-	int no_copy, count = 0;
-	string b_id, b_idd, b_name, a_name;
+	int num_copies, count = 0;
+	string book_id, b_idd, title, authors;
 	cout << "\n\n\t\t\t\tDelete Book Record";
 	file1.open("book1.txt", ios::app | ios::out);
 	file.open("book.txt", ios::in);
@@ -218,11 +246,11 @@ void book_shop::del_book()
 	else
 	{
 		cout << "\n\n Book ID : ";
-		cin >> b_id;
-		file >> b_idd >> b_name >> a_name >> no_copy;
+		cin >> book_id;
+		file >> b_idd >> title >> authors >> num_copies;
 		while (!file.eof())
 		{
-			if (b_id == b_idd)
+			if (book_id == b_idd)
 			{
 				cout << "\033c" << endl;
 				cout << "\n\n\t\t\t\tDelete Book Record";
@@ -230,8 +258,8 @@ void book_shop::del_book()
 				count++;
 			}
 			else
-				file1 << " " << b_idd << " " << b_name << " " << a_name << " " << no_copy << "\n";
-			file >> b_idd >> b_name >> a_name >> no_copy;
+				file1 << " " << b_idd << " " << title << " " << authors << " " << num_copies << "\n";
+			file >> b_idd >> title >> authors >> num_copies;
 		}
 		if (count == 0)
 			cout << "\n\n Book ID Not Found...";
