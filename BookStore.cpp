@@ -1,16 +1,8 @@
 // Book Shope Project With File Handling in C++.
-<<<<<<< Updated upstream
 #include <iostream>
 #include <conio.h>
 #include <stdio.h>
 #include <fstream>
-=======
-#include<iostream>
-#include<conio.h>
-#include<stdio.h>
-#include<fstream>
-
->>>>>>> Stashed changes
 using namespace std;
 
 class BookShop
@@ -27,7 +19,6 @@ private:
 	void del_book();
 };
 
-<<<<<<< Updated upstream
 void BookShop::get_choice()
 {
 	BookShop b;
@@ -36,62 +27,6 @@ void BookShop::get_choice()
 	cout << "\n\n Your Choice : ";
 	cin >> choice;
 	switch (choice)
-=======
-    void BookShop::get_choice()
-    {
-        BookShop b;
-        int choice;
-        char x;
-        cout<<"\n\n Your Choice : ";
-	    cin>>choice;
-	    switch(choice)
-	    {
-		    case 1:
-			    do
-		    	{
-		    	b.add_book();
-				cout << "\n\n Do You Want to Add another Book (y,n) : ";
-				cin>>x;
-		      }while(x == 'y');
-			    break;
-		    case 2:
-			    b.show_books();
-			    break;
-		    case 3:
-		    	b.check_book();
-		    	break;
-		    case 4:
-			    b.update_book();
-			    break;
-		    case 5:
-			    b.del_book();
-			    break;
-		    case 6:
-			    exit(0);
-		    default:
-			    cout<<"\n\n Invalid Value...Please Try Again...";
-	    }
-	    getch();
-        control_panel();
-     }
-
-
-	void BookShop::control_panel()
-	{
-        BookShop b;
-        system("cls");
-		cout<<"\n\n\t\t\t\tControl Panel";
-		cout<<"\n\n 1. Add New Book";
-		cout<<"\n 2. Display Books";
-		cout<<"\n 3. Check Specific Book";
-		cout<<"\n 4. Update Book";
-		cout<<"\n 5. Delete Book";
-		cout<<"\n 6. Exit";
-        b.get_choice();
-    }
-	
-	void BookShop::add_book()
->>>>>>> Stashed changes
 	{
 	case 1:
 		do
@@ -228,23 +163,10 @@ void BookShop::update_book()
 		cout << "\n\n File Openning Error...";
 	else
 	{
-<<<<<<< Updated upstream
 		cout << "\n\n Book ID : ";
 		cin >> b_id;
 		file >> b_idd >> b_name >> a_name >> no_copy;
 		while (!file.eof())
-=======
-		system("cls");
-		fstream file, file1;
-		int no_copy, no_co, count = 0;
-		string b_name, b_na, a_name, a_na, b_idd, b_id;
-		cout<<"\n\n\t\t\t\tUpdate Book Record";
-		file1.open("C://book1.txt",ios::app|ios::out);
-		file.open("C://book.txt",ios::in);
-		if(!file)
-		cout<<"\n\n File Openning Error...";
-		else
->>>>>>> Stashed changes
 		{
 			if (b_id == b_idd)
 			{
@@ -304,7 +226,6 @@ void BookShop::del_book()
 		if (count == 0)
 			cout << "\n\n Book ID Not Found...";
 	}
-<<<<<<< Updated upstream
 	file.close();
 	file1.close();
 	remove("C://book.txt");
@@ -312,18 +233,10 @@ void BookShop::del_book()
 }
 
 main()
-=======
-
-int main()
->>>>>>> Stashed changes
 {
 	int choice;
 	char x;
 	BookShop b;
-<<<<<<< Updated upstream
-p:
-=======
->>>>>>> Stashed changes
 	b.control_panel();
 	return 0;
 }
