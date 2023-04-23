@@ -1,2 +1,3 @@
 # Cpp_Project
- For our c++ project 
+CPP Book Management Mini Project
+Uses CPP to manage books present in a CSV file.
